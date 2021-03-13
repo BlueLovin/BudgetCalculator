@@ -1,46 +1,54 @@
-import React from 'react';
+import React, {useState, useEffect} from "react";
 import './App.css';
-import './bootstrap.min.css'
-import InitPopup from './components/Popup'
+import './bootstrap.min.css';
+import * as item from "./db/repositories/items";
+import InitPopup from './components/Popup';
 
 var commaNumber = require('comma-number')
 
 export type IProps = {}
 
 export interface IState {
-    budget: number
+    budget: number,
+    items: any[]
 }
 
+const App = () => {
+  const [budget, updateBudget] = useState(0);
+  const [items, setItems] = useState<Array<item.Item>>([]);
+      // fetch all items when this view mounted
+      useEffect(() => {
+        fetchItems();
+    }, []);
 
+  const fetchItems = async () => {
+      // clean the items array first
+      setItems([]);
 
-class App extends React.Component<IProps, IState> {
-  constructor (props: any){
-    super(props);
-    this.state = {
-        budget: 0
-    };
-}
+      // fetch items from repository
+      const _items = await item.all();
 
-UpdateBudget = (event: any, newBudget: number) => {
-  event.preventDefault();//prevent refresh
-  let val = document.getElementById("budget")! as HTMLInputElement;//get value from input box in popup
-  this.setState({
-    budget: +val.value //set budget accordingly
-  });
-}
-  render() {
-    return(
+      // set items to state
+      setItems(_items);
+  };
+  return(
       <div>
-        
-        <br/> 
-        <h1 className="text-center">Budget Calculator 💵</h1>
-        <h3 className="text-center">${this.state.budget}</h3>
-        <InitPopup changeBudget = {this.UpdateBudget}/>
-      </div>
-    )
-  }
+      <br/> 
+      <h1 className="text-center">Budget Calculator 💵</h1>
+      <h3 className="text-center">${commaNumber(budget)}</h3>
+      <InitPopup changeBudget = {() => updateBudget((document.getElementById("budget")! as HTMLInputElement).valueAsNumber)} />
 
-
-  }
+      {/* list every item  */}
+      {items.map((item, index) => (
+        <>
+          <div>Name = {item.name}</div>
+          <div>Type = {item.type}</div>
+          <div>Low = {item.lowPrice}</div>
+          <div>High = {item.highPrice}</div><br/>
+        </>
+      ))}
+    </div>
+  )
+}
 
 export default App;

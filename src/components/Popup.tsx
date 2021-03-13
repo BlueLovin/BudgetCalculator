@@ -13,30 +13,38 @@ export interface IState {
 class InitPopup extends React.Component<any> {
     constructor (props: any){
         super(props);
-        this.state = {
-        };
+        this.HandleChange = this.HandleChange.bind(this);
     }
+    
+
     HandleChange(event: any){
-        event.preventDefault();
-        const input =  document.getElementById("budget")! as HTMLInputElement;
-        this.setState({
-            budget: parseInt(input.value)
-        });
-        alert(+input.value)
+        const re = /^[0-9\b]+$/;
+
+        if (event.target.value === '' || re.test(event.target.value)) {
+  
+           this.setState({number: event.target.value});
+  
+        }
     }
     render() {
         return (
             <div className="text-center">
             <Popup trigger={<button className="btn-primary"> Change Budget </button>} modal>
+            {(close: any) => (
                 <div className="text-center">
-                    <form onSubmit={this.props.changeBudget}>
+                    <form onSubmit={close}>
                         <span>How much would you like to spend? {this.props.budget}</span>
                         <br/>
-                        <label className="h1 p-1">$</label><input type="text" id="budget"></input>
-                        <input type="submit" value="go"/>
+                        <label className="h1 p-1">$</label>
+                        <input type="number" id="budget"
+                            onChange={this.HandleChange} />
+                        <input type="submit" value="go" onClick={this.props.changeBudget}/>
                     </form>
                 </div>
+            )}
             </Popup>
+            <br /> <br /> 
+            {/* <h1>Enter a budget to get started!</h1> */}
             </div>
         );
     }
