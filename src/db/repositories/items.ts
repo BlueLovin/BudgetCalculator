@@ -22,7 +22,7 @@ export const all = async (): Promise<Array<Item>> => {
             id: _data.id, // because id field in separate function in firestore
             ..._data.data(), // the remaining fields
         });
-        console.log(_data.data())
+        //console.log(_data.data())
     });
 
     // return and convert back it array of item
