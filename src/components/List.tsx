@@ -76,20 +76,10 @@ const List = ({addToCart, formatNumber} : any) => {
         </div>
       )).sort();
 
-    // var iterateDict = types.map((type) => {
-
-    //     setTimeout(() => {
-        
-    //     console.log("iterateDict called")
-    //     itemsDict[type].forEach((element: any) => {
-    //         console.log(element.name)
-    //     })
-    //     }, 2000);
-    // });
-
     const tabs = (
         <Tab.Container id="left-tabs-example" defaultActiveKey="first">
             <Row>
+                {/* Hardcoded the categories in :-( ...getting them in there automatically was an enormous headache. */}
                 <Col sm={6}>
                 <Nav variant="pills" className="flex-column">
                     <Nav.Item>
