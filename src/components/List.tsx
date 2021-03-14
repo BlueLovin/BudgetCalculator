@@ -21,7 +21,7 @@ export interface IState {
 
 
 
-const List = ({addToCart} : any) => {
+const List = ({addToCart, formatNumber} : any) => {
     const [cart, setCart] = useState<any[]>([])
     const [itemsRaw, setItemsRaw] = useState<any[]>([])
     const [types, setTypes] = useState<any[]>([])
@@ -68,7 +68,8 @@ const List = ({addToCart} : any) => {
      //list items list without duplicates, taking in the category as a parameter
     const listItems = (thisType: string) => itemsWithoutDuplicates.map((el) => (
         <div key={el.id}>
-          <h2>{el.type == thisType ? `${el.name}: $${el.lowPrice}` : null}</h2>
+          <h2>{el.type == thisType ? `${el.name}` : null}</h2>
+          <p>{el.type == thisType ? `$${formatNumber(el.lowPrice)} - $${formatNumber(el.highPrice)}` : null}</p>
           {el.type == thisType &&
           <input type="submit" value="add" onClick={() => addToCart(el)} />
             }
