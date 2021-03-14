@@ -19,6 +19,8 @@ export interface IState {
 const App = () => {
   const [budget, setBudget] = useState(0);
   const [overBudget, setOverBudget] = useState(false);
+  const [underBudget, setUnderBudget] = useState(false);
+  const [withinBudget, setWithinBudget] = useState(false);
   const [items, setItems] = useState<Array<item.Item>>([]);
   const [cart, setCart] = useState<any[]>([])
   const [cartLowTotal, setLowTotal] = useState(0);
@@ -30,12 +32,23 @@ const App = () => {
   }, [cart, cartLowTotal, budget]);
 
   const checkBudget = () => {
-     
+     let currBudget = budget * 100; // times 100 to account for the decimal places
 
-    if(cartLowTotal > budget * 100){ // times 100 to account for the decimal places
+    //check to see if total is greater than current budget
+    if(cartLowTotal > currBudget){  // over budget
       setOverBudget(true);
+      setWithinBudget(false);
+      setUnderBudget(false);
+
     }
-    else{
+    if(cartLowTotal < currBudget && cartHighTotal < currBudget){ // under budget
+      setUnderBudget(true);
+      setOverBudget(false);
+      setWithinBudget(false);
+    }
+    if(cartLowTotal < currBudget && cartHighTotal > currBudget){ // within budget
+      setWithinBudget(true);
+      setUnderBudget(false);
       setOverBudget(false);
     }
   }
@@ -81,12 +94,16 @@ const App = () => {
       <div>
         <br/> 
         <h1 className="text-center">Budget Calculator 💵</h1>
-        <h3 className="text-center">${commaNumber(budget)}</h3>
-        <h3 className="text-center text-danger">{overBudget ? 'you are over the budget!': null}</h3>
-        <h3 className="text-center text-success">{!overBudget ? 'you are within the budget!': null}</h3>
+        <h3 className="text-center text-muted">Current Budget: ${commaNumber(budget)}</h3> <br/>
         {/* below lines are ugly, I know. InitPopup is the "Change Budget" button, I pass it the updateBudget function with some params */}
         <InitPopup changeBudget = {updateBudget} /> 
 
+        {/* ternary operators to conditionally render these elements below */}
+        <h3 className="text-center text-success">{underBudget ? 'you are under the budget!': null}</h3><br/>
+        <h3 className="text-center text-info">{withinBudget ? 'you are within the budget!': null}</h3><br/>
+        <h3 className="text-center text-danger">{overBudget ? 'you are over the budget!': null}</h3><br/>
+         <br/>  {/* line break */}
+         
         {/* here is the cart, that includes the category tabs as a child component. i pass it all the things it needs right here. */}
         {/* Why not have all these items in the Cart's state? because we need the current total to see if the budget is over or under! */}
         <Cart addToCart={addToCart} removeFromCart={removeFromCart} total={total} cart={cart} cartLowTotal={cartLowTotal} cartHighTotal={cartHighTotal}/>

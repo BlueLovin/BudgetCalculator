@@ -25,9 +25,11 @@ const Cart = ({addToCart, removeFromCart, cart, total, cartHighTotal, cartLowTot
           <div>
             <div className="container text-center">
                 <div className="row">
+
                     <div className="col-md-4">
                         <List addToCart={addToCart} formatNumber={formatNumber}/>
                     </div>
+
                     <div className="col-md-8">
                         <h2>CART</h2>
                         <div>High Total: $<span id="hi-total">{formatNumber(cartHighTotal)}</span></div>

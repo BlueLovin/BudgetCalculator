@@ -16,20 +16,16 @@ class InitPopup extends React.Component<any> {
         this.HandleChange = this.HandleChange.bind(this);
     }
     
-
-    HandleChange(event: any){
+    HandleChange(event: any){//numbers only! 
         const re = /^[0-9\b]+$/;
-
         if (event.target.value === '' || re.test(event.target.value)) {
-  
            this.setState({number: event.target.value});
-  
         }
     }
     render() {
         return (
             <div className="text-center">
-            <Popup trigger={<button className="btn-primary"> Change Budget </button>} modal>
+            <Popup trigger={<button className="btn btn-outline-primary"> Change Budget </button>} modal>
             {(close: any) => (
                 <div className="text-center">
                     <form onSubmit={close}>
