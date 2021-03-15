@@ -47,16 +47,6 @@ The user is prompted to input a budget. There is a small list of items, pulled f
 * [npm](https://github.com/npm/npm)
 
 
-
-<!-- GETTING STARTED -->
-## Getting Started
-
-To get a local copy up and running follow these simple steps.
-
-```sh
-git clone 
-```
-
 ### Prerequisites
 
 This is an example of how to list things you need to use the software and how to install them.
