@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import './bootstrap.min.css';
-import * as item from './db/repositories/items';
 import InitPopup from './components/Popup';
 import Cart from './components/Cart';
 
@@ -19,11 +18,10 @@ const App = () => {
 	const [overBudget, setOverBudget] = useState(false);
 	const [underBudget, setUnderBudget] = useState(false);
 	const [withinBudget, setWithinBudget] = useState(false);
-	const [items, setItems] = useState<Array<item.Item>>([]);
 	const [cart, setCart] = useState<any[]>([]);
 	const [cartLowTotal, setLowTotal] = useState(0);
-  const [cartHighTotal, setHighTotal] = useState(0);
-  
+	const [cartHighTotal, setHighTotal] = useState(0);
+
 	useEffect(() => {
 		//update total whenever cart is changed
 		total();
@@ -53,37 +51,41 @@ const App = () => {
 		}
 	};
 
-	const fetchItems = async () => {
-		// fetch items from firebase
-		// clean the items array first
-		setItems([]);
-
-		// fetch items from repository
-		const _items = await item.all();
-
-		// set queried items to 'item' state
-		setItems(_items);
-	};
-	const total = () => {
-		//calculate high and low total
-		let lowTotal = 0;
-    let highTotal = 0;
-    //iterate over cart and add each high/low price to correct variables
-		for (let i = 0; i < cart.length; i++) {
-			lowTotal += cart[i].lowPrice;
-			highTotal += cart[i].highPrice;
-		}
-		//set state variables
-		setLowTotal(lowTotal);
-		setHighTotal(highTotal);
-		checkBudget();
-	};
 
 	const addToCart = (element: object) => {
 		if (!cart.includes(element)) {//if item is not already inside cart, add it!
 			setCart([...cart, element]);
 		}
 	};
+
+	const budgetStatus = () => {
+		console.log(underBudget);
+		if (budget === 0) { //if there is no budget
+			return (
+				<h3 className="text-center text-info">enter a budget to get started. 😃</h3>
+			)
+		}
+		if (budget > 0 && cartHighTotal === 0) { // after budget entered, no items in cart
+			return (
+				<h3 className="text-center text-info">Add some items 😃</h3>
+			)
+		}
+		if (underBudget) {
+			return (
+				<h3 className="text-center text-success">you are under the budget!</h3>
+			)
+		}
+		if (overBudget) {
+			return (
+				<h3 className="text-center text-danger">you are over the budget!</h3>
+			)
+		}
+		if (withinBudget) {
+			return (
+				<h3 className="text-center text-info">you are within the budget!</h3>
+			)
+		}
+	}
 
 	const removeFromCart = (element: any) => {
 		let hardCopy = [...cart];
@@ -92,10 +94,10 @@ const App = () => {
 	};
 
 	const updateBudget = () => {
-    const val = (document.getElementById('budget')! as HTMLInputElement).valueAsNumber;
+		const val = (document.getElementById('budget')! as HTMLInputElement).valueAsNumber;
 
-    if(val > 0 && val < 10000000) //min and max values
-      setBudget(val);
+		if (val > 0 && val < 10000000) //min and max values
+			setBudget(val);
 	};
 
 	return (
@@ -105,15 +107,7 @@ const App = () => {
 			<h3 className="text-center text-muted">Current Budget: ${commaNumber(budget)}</h3> <br />
 			{/* below lines are ugly, I know. InitPopup is the "Change Budget" button, I pass it the updateBudget function with some params */}
 			<InitPopup changeBudget={updateBudget} />
-			{/* ternary operators to conditionally render these elements below */}
-			<h3 className="text-center text-info">{budget === 0 ? 'enter a budget to get started. 😃' : null}</h3>
-			<br />
-			<h3 className="text-center text-success">{underBudget ? 'you are under the budget!' : null}</h3>
-			<br />
-			<h3 className="text-center text-info">{withinBudget ? 'you are within the budget!' : null}</h3>
-			<br />
-			<h3 className="text-center text-danger">{overBudget ? 'you are over the budget!' : null}</h3>
-			<br />
+			{budgetStatus()}
 			<br /> {/* line break */}
 			{/* here is the cart, that includes the category tabs as a child component. i pass it all the things it needs right here. */}
 			{/* Why not have all these items in the Cart's state? because we need the current total to see if the budget is over or under! */}
@@ -127,6 +121,22 @@ const App = () => {
 			/>
 		</div>
 	);
+
+	function total() {
+		//calculate high and low total
+		let lowTotal = 0;
+		let highTotal = 0;
+		//iterate over cart and add each high/low price to correct variables
+		for (let i = 0; i < cart.length; i++) {
+			lowTotal += cart[i].lowPrice;
+			highTotal += cart[i].highPrice;
+		}
+		//set state variables
+		setLowTotal(lowTotal);
+		setHighTotal(highTotal);
+		checkBudget();
+	}
+
 };
 
 export default App;

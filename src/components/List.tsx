@@ -17,15 +17,12 @@ export interface IState {
 
 const List = ({ addToCart, formatNumber }: any) => {
 	const [items, setItems] = useState<any[]>([]);
-	const [types] = useState<any[]>([]);
-
-	let itemsDict: any = {}; // {category: [item, item...]}
 
 	useEffect(() => {
 		fetchItems();
 	}, []);
 
-	const fetchItems = async () => {
+	async function fetchItems() {
 		// clean the items array first
 		setItems([]);
 
@@ -38,13 +35,6 @@ const List = ({ addToCart, formatNumber }: any) => {
 
 		items.push();
 	};
-
-	//iterate over objects and store each category into a
-	const getTypes = items.forEach((item) => {
-		if (!types.includes(item.type)) {
-			types.push(item.type);
-		}
-	});
 
 	const itemsWithoutDuplicates = Array.from(new Set(items.map((a) => a.name))).map((name) => {
 		return items.find((a) => a.name === name);
@@ -119,19 +109,6 @@ const List = ({ addToCart, formatNumber }: any) => {
 			</Row>
 		</Tab.Container>
 	);
-
-	const setDictionary = types.forEach((type) => {
-		//iterate over every time
-		let tempArr: any = [];
-		itemsWithoutDuplicates.forEach((item) => {
-			//add all elements that match category type to array
-			if (item.type === type) {
-				tempArr.push(item);
-			}
-		});
-		itemsDict[type] = tempArr; //push that array to current category key in dict
-	});
-	//console.log(itemsDict);
 
 	return (
 		<div>
