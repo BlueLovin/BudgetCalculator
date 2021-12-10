@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import "./bootstrap.min.css";
 import InitPopup from "./components/Popup";
@@ -18,22 +18,32 @@ const App = () => {
   const [cartTotal, setCartTotal] = useState({ low_total: 0, high_total: 0 });
 
   // this function determines if the total is over, under or within budget
-  const computeBudgetState = useCallback(() => {
-    let currBudget = budget * 100; // times 100 to account for the decimal places
 
-    //check to see if total is greater than current budget
-    if (cartTotal.low_total > currBudget) {
-      // over budget
-      setBudgetState(BUDGET_STATE.OVER);
-    }
-    if (cartTotal.low_total < currBudget && cartTotal.high_total < currBudget) {
-      // under budget
-      setBudgetState(BUDGET_STATE.UNDER);
-    }
-    if (cartTotal.low_total < currBudget && cartTotal.high_total > currBudget) {
-      // within budget
-      setBudgetState(BUDGET_STATE.WITHIN);
-    }
+  useEffect(() => {
+    const computeBudgetState = () => {
+      let currBudget = budget * 100; // times 100 to account for the decimal places
+
+      //check to see if total is greater than current budget
+      if (cartTotal.low_total > currBudget) {
+        // over budget
+        setBudgetState(BUDGET_STATE.OVER);
+      }
+      if (
+        cartTotal.low_total < currBudget &&
+        cartTotal.high_total < currBudget
+      ) {
+        // under budget
+        setBudgetState(BUDGET_STATE.UNDER);
+      }
+      if (
+        cartTotal.low_total < currBudget &&
+        cartTotal.high_total > currBudget
+      ) {
+        // within budget
+        setBudgetState(BUDGET_STATE.WITHIN);
+      }
+    };
+    computeBudgetState();
   }, [budget, cartTotal]);
 
   const renderBudgetStatus = () => {
@@ -85,11 +95,7 @@ const App = () => {
       <InitPopup changeBudget={updateBudget} />
       {renderBudgetStatus()}
       <br />
-      <Cart
-        checkBudget={computeBudgetState}
-        cartTotal={cartTotal}
-        setCartTotal={setCartTotal}
-      />
+      <Cart cartTotal={cartTotal} setCartTotal={setCartTotal} />
     </div>
   );
 };

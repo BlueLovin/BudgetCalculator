@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { fetchAllItems } from "../db/repositories/items";
 import Tabs from "./Tabs";
@@ -25,14 +25,14 @@ const List = ({ addToCart, formatNumber }: any) => {
   });
 
   //list items list without duplicates, taking in the category as a parameter
-  const listItems = (thisType: string) =>
+  const listItems = useCallback((thisType: string) =>
     itemsWithoutDuplicates
       .map((el) => (
         <div key={el.id}>
           {el.type === thisType && ( // if the current element matches the category passed here
             <div className="container">
               <div className="row clearfix">
-                <div className="col-md-3 col-sm-6 col-xs-12">
+                <div className="col-lg-5 ">
                   <div className="boxs project_widget">
                     <div className="pw_content">
                       <div className="pw_header">
@@ -56,7 +56,7 @@ const List = ({ addToCart, formatNumber }: any) => {
           )}
         </div>
       ))
-      .sort();
+      .sort(), [addToCart, formatNumber, itemsWithoutDuplicates]);
 
   return (
     <div>
